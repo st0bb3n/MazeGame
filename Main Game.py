@@ -1,16 +1,18 @@
+from sys import exit
+
 board = [
         ['x ',' 1 ',' 2 ',' 3 ',' 4 ',' 5 ',' 6 ',' 7 ',' 8 ',' 9 ',' 10',' 11',' 12',' 13',' 14',' 15',' x',' x'],
-        ['--','---','---','---','---','---','---','---','---','---','---','---','---','---','---','---','--',' 1'], #generates board
+        ['--','---','---','---','---','---','---','---','---','---','---','---','---','---','---','---','--',' x'], #generates board
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 2'],
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 3'],
-        ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 4'],
+        ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' F ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 4'],
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 5'],
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 6'],
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 7'],
-        ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 8'],
-        ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 9'],
-        ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |','10'],
-        ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |','11'],
+        ['| ',' . ',' . ',' . ',' . ',' . ',' @ ',' O ',' O ',' @ ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 8'],
+        ['| ',' . ',' . ',' . ',' . ',' . ',' @ ',' . ',' . ',' @ ',' . ',' . ',' . ',' . ',' . ',' . ',' |',' 9'],
+        ['| ',' . ',' . ',' . ',' . ',' . ',' @ ',' . ',' . ',' @ ',' . ',' . ',' . ',' . ',' . ',' . ',' |','10'],
+        ['| ',' . ',' . ',' . ',' . ',' . ',' @ ',' @ ',' @ ',' @ ',' . ',' . ',' . ',' . ',' . ',' . ',' |','11'],
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |','12'],
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |','13'],
         ['| ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' . ',' |','14'],
@@ -29,7 +31,8 @@ def showGrid(): #shows the grid
 
 posY = 9  #start pos
 posX = 8
-power = 1
+turns = 0
+smashes = 0
 
 #todo diagonal movement + movement power
 
@@ -69,7 +72,32 @@ def move_right():
     showGrid()
     print('Current position:', posX, posY)
 
+def smash():
+    global posX
+    global posY
+    if (board[posY - 1][posX] != ' @ ') and (board[posY - 1][posX] == ' . ' or ' O '):
+        board[posY - 1][posX] = ' . '
+    if (board[posY + 1][posX] != ' @ ') and (board[posY + 1][posX] == ' . ' or ' O '):
+        board[posY + 1][posX] = ' . '
+    if (board[posY][posX - 1] != ' @ ') and (board[posY][posX - 1] == ' . ' or ' O '):
+        board[posY][posX - 1] = ' . '
+    if (board[posY][posX + 1] != ' @ ') and (board[posY][posX + 1] == ' . ' or ' O '):
+        board[posY][posX + 1] = ' . '
+    if (board[posY - 1][posX - 1] != ' @ ') and (board[posY - 1][posX - 1] == ' . ' or ' O '):
+        board[posY - 1][posX - 1] = ' . '
+    if (board[posY + 1][posX + 1] != ' @ ') and (board[posY - 1][posX - 1] == ' . ' or ' O '):
+        board[posY + 1][posX + 1] = ' . '
+    if (board[posY - 1][posX + 1] != ' @ ') and (board[posY - 1][posX - 1] == ' . ' or ' O '):
+        board[posY - 1][posX + 1] = ' . '
+    if (board[posY + 1][posX - 1] != ' @ ' ) and (board[posY - 1][posX - 1] == ' . ' or ' O '):
+        board[posY + 1][posX - 1] = ' . '
+    showGrid()
 
+def win():
+    print('You WIN!')
+    print('You took', turns, 'turns')
+    print('You used', smashes, 'smashes')
+    exit()
 board[posY][posX] = ' S '
 showGrid()
 
@@ -78,16 +106,39 @@ try:
         m = int(input('Movement: '))
         if m == 8 and board[posY - 1][posX] == ' . ' :
             move_up()
+            turns += 1
         if m == 2 and board[posY + 1][posX] == ' . ':
             move_down()
+            turns += 1
         if m == 4 and board[posY][posX - 1] == ' . ':
             move_left()
+            turns += 1
         if m == 6 and board[posY][posX + 1] == ' . ':
             move_right()
-        if m != (2 or 4 or 6 or 8):
+            turns += 1
+        if m == 8 and board[posY - 1][posX] == ' F ' :
+            move_up()
+            turns += 1
+            win()
+        if m == 2 and board[posY + 1][posX] == ' F ':
+            move_down()
+            turns += 1
+            win()
+        if m == 4 and board[posY][posX - 1] == ' F ':
+            move_left()
+            turns += 1
+            win()
+        if m == 6 and board[posY][posX + 1] == ' F ':
+            move_right()
+            turns += 1
+            win()
+        if m == 5:
+            smash()
+            smashes += 1
+        if m != (2 or 4 or 6 or 8 or 5):
             pass
 except:
-    print('Nope!')
+    pass
 
 '''
 if __name__ == '__main__':
