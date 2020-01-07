@@ -27,28 +27,29 @@ def showGrid(): #shows the grid
         row = ''.join(map(str, board[i]))
         print(row)
 
-posX = 7  #start pos
-posY = 7
+posY = 9  #start pos
+posX = 8
+power = 1
 
 #todo diagonal movement + movement power
 
 def move_up():
-    global posY
     global posX
+    global posY
     board[posY][posX] = ' . '
     posY -= 1
     board[posY][posX] = ' S '
     showGrid()
-    print(posY,posX)
+    print(posX,posY)
 
 def move_down():
-    global posY
     global posX
+    global posY
     board[posY][posX] = ' . '
     posY += 1
     board[posY][posX] = ' S '
     showGrid()
-    print(posY,posX)
+    print(posX,posY)
 
 def move_left():
     global posX
@@ -57,7 +58,7 @@ def move_left():
     posX -= 1
     board[posY][posX] = ' S '
     showGrid()
-    print(posY,posX)
+    print(posX,posY)
 
 def move_right():
     global posX
@@ -66,23 +67,27 @@ def move_right():
     posX += 1
     board[posY][posX] = ' S '
     showGrid()
-    print(posY,posX)
+    print('Current position:', posX, posY)
 
 
-board[posX][posY] = ' S '
+board[posY][posX] = ' S '
 showGrid()
 
-while True: #todo end movement
-    m = int(input('Movement: '))
-    if m == 8:
-        move_up()
-    if m == 2:
-        move_down()
-    if m == 4:
-        move_left()
-    if m == 6:
-        move_right()
-
+try:
+    while True: #todo end movement
+        m = int(input('Movement: '))
+        if m == 8 and board[posY - 1][posX] == ' . ' :
+            move_up()
+        if m == 2 and board[posY + 1][posX] == ' . ':
+            move_down()
+        if m == 4 and board[posY][posX - 1] == ' . ':
+            move_left()
+        if m == 6 and board[posY][posX + 1] == ' . ':
+            move_right()
+        if m != (2 or 4 or 6 or 8):
+            pass
+except:
+    print('Nope!')
 
 '''
 if __name__ == '__main__':
